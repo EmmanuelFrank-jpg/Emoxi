@@ -3,21 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>EMOXI Rush</title>
+    <title>EMOXI AI Network</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-main: #f6f7f9;
-            --card-bg: #ffffff;
-            --card-border: #edf0f5;
-            --accent-orange: #ff5e3a;
-            --accent-orange-soft: #fff0ec;
-            --accent-green: #00b87c;
-            --accent-green-soft: #e6f8f2;
-            --text-dark: #0f172a;
-            --text-gray: #64748b;
-            --text-light: #94a3b8;
+            --bg-main: #0c0a17;
+            --card-bg: #151128;
+            --card-border: rgba(255, 255, 255, 0.08);
+            --accent-purple: #6366f1;
+            --accent-purple-light: #818cf8;
+            --accent-green: #10b981;
+            --text-main: #ffffff;
+            --text-muted: #94a3b8;
+            --accent-red: #ef4444;
         }
 
         * {
@@ -30,9 +29,9 @@
 
         body {
             background-color: var(--bg-main);
-            color: var(--text-dark);
+            color: var(--text-main);
             padding: 16px;
-            padding-bottom: 90px;
+            padding-bottom: 95px;
             min-height: 100vh;
         }
 
@@ -43,613 +42,206 @@
             left: 0;
             width: 100vw;
             height: 100vh;
-            background: #fff5f2;
+            background: #080612;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             z-index: 99999;
-            transition: opacity 0.6s ease, visibility 0.6s ease;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
         }
 
         .splash-card {
-            width: 110px;
-            height: 110px;
-            background: #ffffff;
+            width: 100px;
+            height: 100px;
+            background: #151128;
             border-radius: 28px;
-            box-shadow: 0 15px 35px rgba(255, 94, 58, 0.15);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 50px;
+            font-size: 46px;
             position: relative;
-            margin-bottom: 20px;
+            margin-bottom: 16px;
+            border: 1px solid var(--card-border);
+            box-shadow: 0 0 30px rgba(99, 102, 241, 0.3);
         }
 
-        .splash-ring {
-            position: absolute;
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            border: 3px solid transparent;
-            border-top-color: var(--accent-orange);
-            border-right-color: rgba(255, 94, 58, 0.2);
-            animation: spinRing 1.5s linear infinite;
-        }
+        .splash-title { font-size: 24px; font-weight: 800; }
+        .splash-title span { color: var(--accent-purple-light); }
 
-        @keyframes spinRing {
-            100% { transform: rotate(360deg); }
-        }
+        /* TAB PAGES */
+        .tab-page { display: none; flex-direction: column; gap: 14px; }
+        .tab-page.active { display: flex; }
 
-        .splash-title {
-            font-size: 24px;
-            font-weight: 800;
-            color: var(--text-dark);
-            letter-spacing: 1px;
-        }
-
-        .splash-title span { color: var(--accent-orange); }
-
-        .splash-subtitle {
-            font-size: 11px;
-            font-weight: 700;
-            color: var(--text-gray);
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            margin-top: 6px;
-        }
-
-        /* TOP BOUNTY BANNER */
-        .bounty-card {
-            background: linear-gradient(135deg, #2a1b18, #120b0a);
-            color: #ffffff;
-            border-radius: 20px;
-            padding: 14px 16px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 14px;
-        }
-
-        .bounty-title { font-size: 12px; font-weight: 800; color: #ffaa95; text-transform: uppercase; }
-        .bounty-heading { font-size: 16px; font-weight: 800; margin-top: 2px; }
-
-        .btn-bounty {
-            background: var(--accent-orange);
-            color: #fff;
-            border: none;
-            padding: 8px 14px;
-            border-radius: 12px;
-            font-size: 12px;
-            font-weight: 800;
-            cursor: pointer;
-        }
-
-        /* CARD CONTAINERS */
         .card {
             background: var(--card-bg);
             border: 1px solid var(--card-border);
-            border-radius: 24px;
-            padding: 20px;
-            margin-bottom: 14px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+            border-radius: 20px;
+            padding: 18px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
         }
 
-        /* TOP BALANCE & WALLET ACTIONS */
-        .wallet-card {
-            background: linear-gradient(180deg, #1e2532 0%, #111622 100%);
-            color: #ffffff;
-            border: none;
-            padding: 22px 20px;
-        }
-
-        .wallet-sub { font-size: 11px; color: var(--text-light); text-transform: uppercase; font-weight: 700; text-align: center; margin-bottom: 4px; }
-
-        .balance-num {
-            font-size: 34px;
-            font-weight: 800;
-            text-align: center;
-            letter-spacing: -0.5px;
-            margin-bottom: 16px;
-        }
-
-        .wallet-actions {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-        }
-
-        .btn-wallet {
-            background: var(--accent-orange);
-            color: #ffffff;
-            border: none;
-            padding: 12px;
-            border-radius: 16px;
-            font-size: 13px;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            cursor: pointer;
-        }
-
-        .btn-wallet.secondary { background: rgba(255, 255, 255, 0.12); }
-
-        /* 3-STAT BAR */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            margin-bottom: 14px;
-        }
-
-        .stat-box {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 18px;
-            padding: 12px 10px;
-        }
-
-        .stat-label { font-size: 11px; color: var(--text-gray); font-weight: 600; margin-bottom: 4px; }
-        .stat-val { font-size: 13px; font-weight: 800; color: var(--text-dark); }
-        .stat-val.green { color: var(--accent-green); }
-
-        /* MINING REACTOR */
-        .section-header {
+        /* BANNER CARD */
+        .banner-card {
+            background: linear-gradient(135deg, #1e173b, #120d24);
+            border: 1px solid rgba(99, 102, 241, 0.25);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 12px;
-        }
-
-        .section-title { font-size: 16px; font-weight: 800; color: var(--text-dark); }
-
-        .badge-active {
-            background: var(--accent-green-soft);
-            color: var(--accent-green);
-            font-size: 11px;
-            font-weight: 700;
-            padding: 4px 10px;
+            padding: 18px;
             border-radius: 20px;
         }
 
-        .reactor-layout {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            margin-bottom: 18px;
-        }
-
-        .circle-gauge {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            border: 8px solid #fceae5;
-            border-top-color: var(--accent-orange);
-            border-right-color: var(--accent-orange);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            animation: pulseGlow 2s infinite alternate;
-        }
-
-        @keyframes pulseGlow {
-            from { box-shadow: 0 0 5px rgba(255,94,58,0.2); }
-            to { box-shadow: 0 0 15px rgba(255,94,58,0.5); }
-        }
-
-        .info-label { font-size: 12px; color: var(--text-gray); font-weight: 600; }
-        .info-amount { font-size: 22px; font-weight: 800; color: var(--text-dark); margin: 2px 0 6px 0; }
-        .power-rate { font-size: 13px; font-weight: 700; color: var(--accent-orange); }
-
-        .btn-collect {
-            width: 100%;
-            background: #ffaa95;
-            color: #ffffff;
-            font-size: 15px;
-            font-weight: 800;
-            padding: 16px;
-            border: none;
-            border-radius: 18px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-        }
-
-        .btn-collect.ready {
-            background: var(--accent-orange);
-            box-shadow: 0 6px 20px rgba(255, 94, 58, 0.3);
-        }
-
-        .min-collect-text {
-            font-size: 11px;
-            color: var(--text-light);
-            text-align: center;
-            font-weight: 600;
-            margin-top: 8px;
-        }
-
-        /* PROFILE HEADER (ACCOUNT TAB) */
-        .profile-card {
-            background: linear-gradient(135deg, #1e2532, #111622);
-            color: #fff;
-            border-radius: 24px;
-            padding: 20px;
-            margin-bottom: 14px;
-        }
-
-        .profile-user { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
-        .profile-avatar {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #ff5e3a, #ffaa95);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 22px;
-            font-weight: 800;
-            color: #fff;
-        }
-
-        .profile-name h3 { font-size: 18px; font-weight: 800; }
-        .profile-id { font-size: 11px; color: var(--text-light); margin-top: 2px; }
-
-        .verified-tag {
+        .badge-pill {
             display: inline-block;
-            background: rgba(0, 184, 124, 0.15);
-            color: var(--accent-green);
+            background: rgba(99, 102, 241, 0.18);
+            color: var(--accent-purple-light);
             font-size: 10px;
             font-weight: 800;
-            padding: 3px 8px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+        }
+
+        .banner-title { font-size: 18px; font-weight: 800; margin-bottom: 4px; }
+        .banner-sub { font-size: 11px; color: var(--text-muted); line-height: 1.4; max-width: 82%; }
+
+        /* LINK BOX */
+        .link-input-box {
+            display: flex;
+            gap: 8px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--card-border);
+            border-radius: 14px;
+            padding: 6px 6px 6px 12px;
+            align-items: center;
+            margin: 14px 0;
+        }
+
+        .link-text {
+            font-size: 11px;
+            color: var(--text-muted);
+            flex-grow: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .btn-copy {
+            background: var(--accent-purple);
+            color: #fff;
+            border: none;
+            padding: 10px 16px;
             border-radius: 10px;
-            margin-top: 4px;
-        }
-
-        /* TAB PAGES */
-        .tab-page { display: none; flex-direction: column; }
-        .tab-page.active { display: flex; }
-
-        .list-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px 0;
-            border-bottom: 1px solid var(--card-border);
-        }
-        .list-row:last-child { border-bottom: none; }
-
-        /* BOTTOM NAV BAR */
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 72px;
-            background: #ffffff;
-            border-top: 1px solid #edf0f5;
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            align-items: center;
-            z-index: 1000;
-            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.03);
-        }
-
-        .nav-tab {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
-            color: var(--text-light);
-            font-size: 10px;
+            font-size: 12px;
             font-weight: 700;
             cursor: pointer;
         }
 
-        .nav-tab.active { color: var(--accent-orange); }
-        .nav-icon { font-size: 18px; }
-    </style>
-</head>
-<body>
-
-    <!-- SPLASH SCREEN -->
-    <div id="splash-screen">
-        <div class="splash-card">
-            <div class="splash-ring"></div>
-            🔥
-        </div>
-        <div class="splash-title">EMOXI <span>RUSH</span></div>
-        <div class="splash-subtitle">Rising From The Flames</div>
-    </div>
-
-    <!-- TAB 1: HOME -->
-    <div id="page-home" class="tab-page active">
-        <div class="bounty-card">
-            <div>
-                <div class="bounty-title">🏆 Referral Bounty</div>
-                <div class="bounty-heading">Earn $0.0100 Per Friend</div>
-            </div>
-            <button class="btn-bounty" onclick="switchTab('friends')">Join Bounty</button>
-        </div>
-
-        <div class="card wallet-card">
-            <div class="wallet-sub">Available to withdraw</div>
-            <div class="balance-num" id="total-balance">$0.0000</div>
-            <div class="wallet-actions">
-                <button class="btn-wallet">↑ Add funds</button>
-                <button class="btn-wallet secondary" onclick="switchTab('account')">↓ Withdraw</button>
-            </div>
-        </div>
-
-        <div class="stats-grid">
-            <div class="stat-box">
-                <div class="stat-label">Daily</div>
-                <div class="stat-val green">+$0.0200</div>
-            </div>
-            <div class="stat-box">
-                <div class="stat-label">Funds</div>
-                <div class="stat-val">$0.00</div>
-            </div>
-            <div class="stat-box">
-                <div class="stat-label">Referrals</div>
-                <div class="stat-val">$0.0000</div>
-            </div>
-        </div>
-
-        <!-- Mining Reactor -->
-        <div class="card">
-            <div class="section-header">
-                <div class="section-title">Mining reactor</div>
-                <div class="badge-active">1 active</div>
-            </div>
-
-            <div class="reactor-layout">
-                <div class="circle-gauge">
-                    <span style="font-size:24px;">🔥</span>
-                    <span style="font-size:8px; font-weight:800; color:var(--text-gray); margin-top:2px;">MINING</span>
-                </div>
-                <div>
-                    <div class="info-label">Ready to collect</div>
-                    <div class="info-amount" id="pending-collect">$0.000000</div>
-                    <div class="info-label">Mining power</div>
-                    <div class="power-rate">$0.0200 <span style="font-size:11px; font-weight:600; color:var(--text-gray);">/day</span></div>
-                </div>
-            </div>
-
-            <button class="btn-collect" id="collect-btn" onclick="collectEarnings()">Collect earnings</button>
-            <div class="min-collect-text">Minimum collect · $0.0010</div>
-        </div>
-    </div>
-
-    <!-- TAB 2: MINERS -->
-    <div id="page-miners" class="tab-page">
-        <div class="card">
-            <h3 class="section-title" style="margin-bottom:12px;">Your Active Miners</h3>
-            <div style="display:flex; align-items:center; gap:14px;">
-                <div style="width:65px; height:65px; background:#120b0a; border-radius:16px; display:flex; align-items:center; justify-content:center; font-size:30px;">🥚</div>
-                <div>
-                    <h4 style="font-size:14px; font-weight:800;">Free EMOXI Miner</h4>
-                    <div style="font-size:12px; font-weight:700; color:var(--accent-green); margin-top:2px;">+$0.0200/d</div>
-                    <div style="font-size:11px; color:var(--text-light); margin-top:2px;">Expires in 30 days</div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- TAB 3: TASKS -->
-    <div id="page-tasks" class="tab-page">
-        <div class="card">
-            <h3 class="section-title" style="margin-bottom:6px;">Task Hub (<span id="task-count-val">0</span> / 50 Completed)</h3>
-            <p style="font-size:12px; color:var(--text-gray); margin-bottom:14px;">Complete 50 tasks ($0.0010/task) to verify your account and unlock $1.00 withdrawals!</p>
-
-            <div class="list-row">
-                <div>
-                    <h5 style="font-size:13px; font-weight:700;">Join Official Channel</h5>
-                    <p style="font-size:11px; color:var(--accent-green); font-weight:700; margin-top:2px;">+$0.0010 USD</p>
-                </div>
-                <button class="btn-bounty" onclick="completeTask(0.0010, this)">Claim</button>
-            </div>
-            <div class="list-row">
-                <div>
-                    <h5 style="font-size:13px; font-weight:700;">Watch Sponsor Ad</h5>
-                    <p style="font-size:11px; color:var(--accent-green); font-weight:700; margin-top:2px;">+$0.0010 USD</p>
-                </div>
-                <button class="btn-bounty" onclick="completeTask(0.0010, this)">Claim</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- TAB 4: FRIENDS -->
-    <div id="page-friends" class="tab-page">
-        <div class="card" style="text-align:center;">
-            <h3 class="section-title" style="margin-bottom:6px;">Invite Friends & Earn</h3>
-            <p style="font-size:12px; color:var(--text-gray); margin-bottom:16px;">Earn $0.0100 USD bonus per active invited friend!</p>
-            <div style="background:#f8fafc; padding:12px; border-radius:12px; border:1px dashed #cbd5e1; margin-bottom:14px; font-size:12px; font-weight:700; color:var(--accent-orange);" id="ref-link">https://t.me/EMOXI_bot?start=ref123</div>
-            <button class="btn-bounty" style="width:100%; padding:14px;" onclick="copyLink()">Copy Invite Link</button>
-        </div>
-    </div>
-
-    <!-- TAB 5: ACCOUNT -->
-    <div id="page-account" class="tab-page">
-        <div class="profile-card">
-            <div class="profile-user">
-                <div class="profile-avatar" id="user-avatar">E</div>
-                <div class="profile-name">
-                    <h3 id="user-name">User</h3>
-                    <div class="profile-id" id="user-id">ID: 6577223652</div>
-                    <div class="verified-tag" id="verified-status">Unverified Member ❌</div>
-                </div>
-            </div>
-
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; border-top:1px solid rgba(255,255,255,0.1); padding-top:12px;">
-                <div>
-                    <div style="font-size:10px; color:var(--text-light); text-transform:uppercase;">Lifetime Payouts</div>
-                    <div style="font-size:16px; font-weight:800; color:#fff;">$0.0000</div>
-                </div>
-                <div>
-                    <div style="font-size:10px; color:var(--text-light); text-transform:uppercase;">Total Deposited</div>
-                    <div style="font-size:16px; font-weight:800; color:#fff;">$0.00</div>
-                </div>
-            </div>
-        </div>
-
-        <div class="card">
-            <div class="list-row">
-                <span style="font-size:12px; color:var(--text-gray); font-weight:600;">Mining Balance</span>
-                <strong style="font-size:13px;" id="acc-balance">$0.0000</strong>
-            </div>
-            <div class="list-row">
-                <span style="font-size:12px; color:var(--text-gray); font-weight:600;">Tasks Completed</span>
-                <strong style="font-size:13px;" id="acc-tasks">0 / 50</strong>
-            </div>
-            <div class="list-row">
-                <span style="font-size:12px; color:var(--text-gray); font-weight:600;">Payout Wallet</span>
-                <strong style="font-size:12px; color:var(--accent-green);">BEP-20 (BNB/USDT)</strong>
-            </div>
-        </div>
-
-        <button class="btn-bounty" style="width:100%; padding:16px;" onclick="requestPayout()">Request $1.00 Withdrawal</button>
-    </div>
-
-    <!-- 5 TAB NAVIGATION BAR -->
-    <div class="bottom-nav">
-        <div class="nav-tab active" onclick="switchTab('home', this)">
-            <span class="nav-icon">🏠</span>
-            <span>Home</span>
-        </div>
-        <div class="nav-tab" onclick="switchTab('miners', this)">
-            <span class="nav-icon">🔥</span>
-            <span>Miners</span>
-        </div>
-        <div class="nav-tab" onclick="switchTab('tasks', this)">
-            <span class="nav-icon">📋</span>
-            <span>Tasks</span>
-        </div>
-        <div class="nav-tab" onclick="switchTab('friends', this)">
-            <span class="nav-icon">👥</span>
-            <span>Friends</span>
-        </div>
-        <div class="nav-tab" onclick="switchTab('account', this)">
-            <span class="nav-icon">👤</span>
-            <span>Account</span>
-        </div>
-    </div>
-
-    <script>
-        // Splash screen fade
-        function hideSplash() {
-            const splash = document.getElementById('splash-screen');
-            if (splash) {
-                splash.style.opacity = '0';
-                splash.style.visibility = 'hidden';
-            }
-        }
-        window.addEventListener('DOMContentLoaded', () => setTimeout(hideSplash, 1500));
-        window.addEventListener('load', () => setTimeout(hideSplash, 1500));
-        setTimeout(hideSplash, 2200);
-
-        const tg = window.Telegram?.WebApp;
-        if (tg) {
-            tg.expand();
-            const user = tg.initDataUnsafe?.user;
-            if (user) {
-                document.getElementById('user-name').innerText = user.first_name || "Miner";
-                document.getElementById('user-avatar').innerText = (user.first_name || "E")[0].toUpperCase();
-                document.getElementById('user-id').innerText = "ID: " + (user.id || "6577223652");
-            }
+        .btn-share {
+            width: 100%;
+            background: var(--accent-purple);
+            color: #fff;
+            border: none;
+            padding: 14px;
+            border-radius: 16px;
+            font-size: 14px;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
         }
 
-        let userBalance = 0.0000;
-        let pendingCollect = 0.000000;
-        let tasksDone = 0;
-        
-        // Exact 24-hour rate: $0.0200 divided by 86,400 seconds in a day
-        const ratePerSec = 0.0200 / 86400; 
-
-        // True Continuous Passive Mining Ticker
-        setInterval(() => {
-            pendingCollect += ratePerSec;
-            document.getElementById('pending-collect').innerText = "$" + pendingCollect.toFixed(6);
-
-            // Turn collect button glowing orange once minimum collect threshold ($0.0010) is reached
-            const btn = document.getElementById('collect-btn');
-            if (pendingCollect >= 0.0010) {
-                btn.classList.add('ready');
-            }
-        }, 1000);
-
-        function collectEarnings() {
-            if (pendingCollect < 0.0010) {
-                alert("Minimum collect is $0.0010 USD");
-                return;
-            }
-            userBalance += pendingCollect;
-            pendingCollect = 0.000000;
-            updateUI();
-            document.getElementById('collect-btn').classList.remove('ready');
-            alert("Successfully collected mined earnings!");
+        /* 4 STAT GRID */
+        .stats-4grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
         }
 
-        function completeTask(reward, btn) {
-            userBalance += reward;
-            tasksDone++;
-            updateUI();
-            btn.innerText = "Claimed";
-            btn.style.background = "#cbd5e1";
-            btn.onclick = null;
-            alert("Task completed! +$" + reward.toFixed(4) + " added.");
+        .stat-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 14px;
         }
 
-        function updateUI() {
-            document.getElementById('total-balance').innerText = "$" + userBalance.toFixed(4);
-            document.getElementById('acc-balance').innerText = "$" + userBalance.toFixed(4);
-            document.getElementById('task-count-val').innerText = tasksDone;
-            document.getElementById('acc-tasks').innerText = tasksDone + " / 50";
+        .stat-card-title { font-size: 10px; color: var(--text-muted); font-weight: 800; text-transform: uppercase; }
+        .stat-card-val { font-size: 18px; font-weight: 800; margin-top: 4px; }
 
-            if (tasksDone >= 50) {
-                document.getElementById('verified-status').innerText = "Verified Member ✔";
-                document.getElementById('verified-status').style.background = "rgba(0,184,124,0.2)";
-            }
+        /* INVITED FRIENDS LIST */
+        .invited-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--card-border);
+        }
+        .invited-row:last-child { border-bottom: none; }
+
+        .invited-left { display: flex; align-items: center; gap: 12px; }
+        .invited-avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #312e81, #1e1b4b);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            font-weight: 800;
         }
 
-        function requestPayout() {
-            if (userBalance < 1.00) {
-                alert("Withdrawal locked: Minimum balance threshold is $1.00 USD.");
-                return;
-            }
-            if (tasksDone < 50) {
-                alert("Withdrawal locked: You must complete 50 tasks to verify your account.");
-                return;
-            }
-            alert("Withdrawal request queued! $0.99 net payout will be processed to your wallet within 24 hours.");
+        .invited-user { font-size: 13px; font-weight: 700; }
+        .invited-time { font-size: 11px; color: var(--text-muted); }
+
+        /* ACCOUNT SETTINGS MENU */
+        .menu-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 18px;
+            cursor: pointer;
+            margin-bottom: 10px;
         }
 
-        function copyLink() {
-            navigator.clipboard.writeText("https://t.me/EMOXI_bot?start=ref123");
-            alert("Referral link copied to clipboard!");
+        .menu-left { display: flex; align-items: center; gap: 12px; }
+        .menu-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 12px;
+            background: rgba(99, 102, 241, 0.15);
+            color: var(--accent-purple-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
         }
 
-        function switchTab(tabId, element) {
-            document.querySelectorAll('.tab-page').forEach(p => p.classList.remove('active'));
-            document.querySelectorAll('.nav-tab').forEach(n => n.classList.remove('active'));
+        .menu-title { font-size: 14px; font-weight: 700; }
+        .menu-sub { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+        .status-badge-text { font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 10px; }
 
-            const activeTab = document.getElementById('page-' + tabId);
-            if (activeTab) { activeTab.classList.add('active'); }
-
-            if (element) {
-                element.classList.add('active');
-            } else {
-                const tabs = document.querySelectorAll('.nav-tab');
-                tabs.forEach(t => {
-                    if (t.innerText.toLowerCase().includes(tabId)) t.classList.add('active');
-                });
-            }
+        /* MODAL FOR LEADERBOARD & ACCOUNT VERIFICATION */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(8px);
+            z-index: 10000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
         }
-    </script>
-</body>
-</html>
+
+        .modal-content {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 24px
