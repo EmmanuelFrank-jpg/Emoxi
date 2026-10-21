@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>EMOXI AI Network</title>
+    <title>EMOXI Network</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
@@ -35,41 +35,6 @@
             min-height: 100vh;
         }
 
-        /* SPLASH SCREEN */
-        #splash-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: #080612;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            z-index: 99999;
-            transition: opacity 0.5s ease, visibility 0.5s ease;
-        }
-
-        .splash-card {
-            width: 100px;
-            height: 100px;
-            background: #151128;
-            border-radius: 28px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 46px;
-            position: relative;
-            margin-bottom: 16px;
-            border: 1px solid var(--card-border);
-            box-shadow: 0 0 30px rgba(99, 102, 241, 0.3);
-        }
-
-        .splash-title { font-size: 24px; font-weight: 800; }
-        .splash-title span { color: var(--accent-purple-light); }
-
-        /* TAB PAGES */
         .tab-page { display: none; flex-direction: column; gap: 14px; }
         .tab-page.active { display: flex; }
 
@@ -81,7 +46,6 @@
             box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
         }
 
-        /* BANNER CARD */
         .banner-card {
             background: linear-gradient(135deg, #1e173b, #120d24);
             border: 1px solid rgba(99, 102, 241, 0.25);
@@ -107,7 +71,6 @@
         .banner-title { font-size: 18px; font-weight: 800; margin-bottom: 4px; }
         .banner-sub { font-size: 11px; color: var(--text-muted); line-height: 1.4; max-width: 82%; }
 
-        /* LINK BOX */
         .link-input-box {
             display: flex;
             gap: 8px;
@@ -149,10 +112,8 @@
             font-size: 14px;
             font-weight: 800;
             cursor: pointer;
-            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
         }
 
-        /* 4 STAT GRID */
         .stats-4grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -169,7 +130,6 @@
         .stat-card-title { font-size: 10px; color: var(--text-muted); font-weight: 800; text-transform: uppercase; }
         .stat-card-val { font-size: 18px; font-weight: 800; margin-top: 4px; }
 
-        /* INVITED FRIENDS LIST */
         .invited-row {
             display: flex;
             align-items: center;
@@ -195,7 +155,6 @@
         .invited-user { font-size: 13px; font-weight: 700; }
         .invited-time { font-size: 11px; color: var(--text-muted); }
 
-        /* ACCOUNT SETTINGS MENU */
         .menu-row {
             display: flex;
             align-items: center;
@@ -225,7 +184,6 @@
         .menu-sub { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
         .status-badge-text { font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 10px; }
 
-        /* MODAL FOR LEADERBOARD & ACCOUNT VERIFICATION */
         .modal {
             display: none;
             position: fixed;
@@ -234,7 +192,6 @@
             width: 100vw;
             height: 100vh;
             background: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(8px);
             z-index: 10000;
             align-items: center;
             justify-content: center;
@@ -244,4 +201,99 @@
         .modal-content {
             background: var(--card-bg);
             border: 1px solid var(--card-border);
-            border-radius: 24px
+            border-radius: 24px;
+            padding: 22px;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        /* BOTTOM NAV BAR */
+        .bottom-nav {
+            position: fixed;
+            bottom: 12px;
+            left: 16px;
+            right: 16px;
+            height: 64px;
+            background: #ffffff;
+            border-radius: 32px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            align-items: center;
+            z-index: 1000;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2px;
+            color: #64748b;
+            font-size: 10px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .nav-item.active { color: #0f172a; }
+
+        .nav-item.active .nav-icon-box {
+            background: var(--accent-purple);
+            color: #fff;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: -10px;
+        }
+
+        .nav-icon-text { font-size: 18px; }
+    </style>
+</head>
+<body>
+
+    <!-- TAB 1: MINING -->
+    <div id="page-mining" class="tab-page active">
+        <div class="card" style="text-align:center; padding:28px 18px;">
+            <div style="font-size:11px; color:var(--text-muted); font-weight:800; letter-spacing:1px; margin-bottom:6px;">AVAILABLE TO WITHDRAW</div>
+            <h1 style="font-size:36px; font-weight:800; color:var(--accent-green);" id="home-bal">$0.0000</h1>
+            <p style="font-size:12px; color:var(--text-muted); margin-top:4px;">Minimum Payout: $1.00 USD</p>
+
+            <div style="margin-top:24px; padding:20px; background:rgba(255,255,255,0.03); border-radius:18px; border:1px solid var(--card-border);">
+                <div style="font-size:12px; color:var(--text-muted); font-weight:700;">PASSIVE MINING RIG ($0.0200 / 24h)</div>
+                <div style="font-size:22px; font-weight:800; color:var(--accent-green); margin:6px 0;" id="pending-collect">$0.000000</div>
+                <button class="btn-share" onclick="collectEarnings()">⚡ Collect Mining Yield</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 2: TASKS -->
+    <div id="page-tasks" class="tab-page">
+        <div class="banner-card">
+            <div>
+                <div class="badge-pill">⚡ REWARD HUB</div>
+                <div class="banner-title">Complete Ads & Earn</div>
+                <div class="banner-sub">Complete tasks ($0.0010/task) to earn rewards and reach 50 completed ads to verify your account!</div>
+            </div>
+            <div style="font-size:42px;">💰</div>
+        </div>
+
+        <div class="card">
+            <h4 style="font-size:14px; font-weight:800; margin-bottom:12px;">Active Ad Tasks</h4>
+            <div style="display:flex; justify-content:space-between; align-items:center; padding:12px 0;">
+                <div>
+                    <h5 style="font-size:13px;">Watch Sponsor Ad</h5>
+                    <p style="font-size:11px; color:var(--accent-green);">+$0.0010 USD</p>
+                </div>
+                <button class="btn-copy" onclick="completeTask(0.0010, this)">Watch Ad</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 3: FRIENDS -->
+    <div id="page-referrals" class="tab-page">
+        <div class="banner-card">
+            <div>
+                <div class="badge-pill">⭐ Referral Program
