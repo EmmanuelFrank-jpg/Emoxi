@@ -2,218 +2,345 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>EMOXI Dashboard</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg-color: #0b0e14;
-            --card-bg: #161b22;
-            --accent-green: #00ff88;
-            --accent-gold: #ffcc00;
+            --card-bg: #151a23;
+            --card-border: #222938;
+            --accent-green: #00e676;
+            --accent-glow: rgba(0, 230, 118, 0.2);
             --text-main: #ffffff;
-            --text-muted: #8b949e;
-            --border-color: #30363d;
+            --text-muted: #8a94a6;
+            --accent-red: #ff5252;
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            user-select: none;
         }
 
         body {
             background-color: var(--bg-color);
             color: var(--text-main);
             padding: 16px;
-            max-width: 480px;
-            margin: 0 auto;
+            padding-bottom: 90px;
+            min-height: 100vh;
         }
 
-        header {
+        /* Top Header */
+        .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 12px;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .user-info h2 {
-            font-size: 18px;
-            color: var(--text-main);
-        }
-
-        .badge-unverified {
-            font-size: 11px;
-            background: rgba(255, 75, 75, 0.15);
-            color: #ff4b4b;
-            padding: 3px 8px;
-            border-radius: 12px;
-            font-weight: 600;
-        }
-
-        .balance-card {
-            background: linear-gradient(135deg, #1f2937, #111827);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            padding: 20px;
-            text-align: center;
-            margin-bottom: 20px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
-        }
-
-        .balance-title {
-            font-size: 13px;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 8px;
-        }
-
-        .balance-amount {
-            font-size: 32px;
-            font-weight: 700;
-            color: var(--accent-green);
-            margin-bottom: 4px;
-        }
-
-        .mining-section {
             background: var(--card-bg);
-            border: 1px solid var(--border-color);
+            border: 1px solid var(--card-border);
+            padding: 12px 16px;
             border-radius: 16px;
-            padding: 20px;
-            text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 16px;
         }
 
-        .mining-btn {
-            background: var(--accent-green);
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #00e676, #00b0ff);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
             color: #000;
-            border: none;
-            width: 100%;
-            padding: 14px;
-            border-radius: 12px;
-            font-size: 16px;
+        }
+
+        .user-details h4 { font-size: 14px; font-weight: 700; }
+        .user-details span { font-size: 11px; color: var(--accent-green); font-weight: 600; }
+
+        .status-badge {
+            font-size: 11px;
+            background: rgba(255, 82, 82, 0.1);
+            color: var(--accent-red);
+            padding: 6px 10px;
+            border-radius: 20px;
             font-weight: 700;
-            cursor: pointer;
-            margin-top: 12px;
-            transition: opacity 0.2s;
+            border: 1px solid rgba(255, 82, 82, 0.2);
         }
 
-        .mining-btn:active {
-            opacity: 0.8;
+        /* Tab Content Containers */
+        .tab-content { display: none; flex-direction: column; gap: 16px; }
+        .tab-content.active { display: flex; }
+
+        /* Card Styles */
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            padding: 20px;
         }
 
-        .section-title {
-            font-size: 15px;
-            font-weight: 600;
-            margin-bottom: 12px;
-            color: var(--text-muted);
-        }
+        /* Balance Display */
+        .balance-title { font-size: 12px; color: var(--text-muted); text-transform: uppercase; font-weight: 700; text-align: center; }
+        .balance-amount { font-size: 36px; font-weight: 800; text-align: center; margin: 8px 0; }
+        .balance-amount span { color: var(--accent-green); }
+        .balance-usd { font-size: 13px; color: var(--text-muted); text-align: center; font-weight: 600; }
 
-        .task-list {
+        /* Mining Section */
+        .mining-node-container {
             display: flex;
             flex-direction: column;
-            gap: 10px;
-            margin-bottom: 30px;
+            align-items: center;
+            gap: 20px;
+            padding: 30px 20px;
+            text-align: center;
         }
 
-        .task-item {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 14px 16px;
+        .mining-circle {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(0,230,118,0.1) 0%, rgba(21,26,35,1) 70%);
+            border: 2px solid var(--accent-green);
+            box-shadow: 0 0 20px var(--accent-glow);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .mining-icon { font-size: 32px; }
+        .mining-rate { font-size: 12px; font-weight: 700; color: var(--accent-green); }
+
+        .btn-primary {
+            width: 100%;
+            background: var(--accent-green);
+            color: #000;
+            font-size: 15px;
+            font-weight: 800;
+            padding: 14px;
+            border: none;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+        .btn-primary:active { transform: scale(0.98); }
+
+        /* Tasks & Referrals Lists */
+        .list-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--card-border);
         }
+        .list-item:last-child { border-bottom: none; }
 
-        .task-info h4 {
-            font-size: 14px;
-            margin-bottom: 4px;
-        }
+        .item-info h5 { font-size: 13px; font-weight: 700; }
+        .item-info p { font-size: 11px; color: var(--accent-green); font-weight: 600; margin-top: 2px; }
 
-        .task-info p {
+        .btn-action {
+            background: rgba(255, 255, 255, 0.08);
+            color: #fff;
+            border: 1px solid var(--card-border);
+            padding: 8px 14px;
+            border-radius: 12px;
             font-size: 12px;
-            color: var(--accent-gold);
-        }
-
-        .task-action-btn {
-            background: transparent;
-            border: 1px solid var(--accent-green);
-            color: var(--accent-green);
-            padding: 6px 12px;
-            border-radius: 8px;
-            font-size: 12px;
-            font-weight: 600;
+            font-weight: 700;
             cursor: pointer;
         }
+
+        /* Bottom Nav Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 70px;
+            background: #11151c;
+            border-top: 1px solid var(--card-border);
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            color: var(--text-muted);
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .nav-item.active { color: var(--accent-green); }
+        .nav-icon { font-size: 18px; }
     </style>
 </head>
 <body>
 
-    <header>
+    <!-- Header -->
+    <div class="header">
         <div class="user-info">
-            <h2 id="username">EMOXI User</h2>
+            <div class="avatar" id="user-avatar">E</div>
+            <div class="user-details">
+                <h4 id="user-name">User</h4>
+                <span>Level 1 Miner</span>
+            </div>
         </div>
-        <div id="status-badge" class="badge-unverified">Unverified ❌</div>
-    </header>
-
-    <div class="balance-card">
-        <div class="balance-title">Total Balance</div>
-        <div class="balance-amount" id="balance">0.0000 EMO</div>
-        <div style="font-size: 12px; color: var(--text-muted);">≈ $0.00 USD</div>
+        <div class="status-badge">Unverified ❌</div>
     </div>
 
-    <div class="mining-section">
-        <div class="section-title">ACTIVE MINING RIG</div>
-        <div style="font-size: 14px;" id="mining-status">Status: Idle</div>
-        <button class="mining-btn" onclick="startMining()">⚡ Start Mining Cycle</button>
+    <!-- TAB 1: MINING SECTION -->
+    <div id="tab-mining" class="tab-content active">
+        <div class="card">
+            <div class="balance-title">Total EMOXI Balance</div>
+            <div class="balance-amount"><span id="balance-val">0.0000</span> EMO</div>
+            <div class="balance-usd">≈ $0.00 USD</div>
+        </div>
+
+        <div class="card mining-node-container">
+            <div class="mining-circle">
+                <span class="mining-icon">⛏️</span>
+                <span class="mining-rate">+0.50 EMO/h</span>
+            </div>
+            <button class="btn-primary" onclick="claimMining()">Start 8h Mining Session</button>
+        </div>
     </div>
 
-    <div class="section-title">EARNING TASKS (0/50 Completed)</div>
-    <div class="task-list">
-        <div class="task-item">
-            <div class="task-info">
-                <h4>Join Official Channel</h4>
-                <p>+0.50 EMO</p>
+    <!-- TAB 2: TASKS SECTION -->
+    <div id="tab-tasks" class="tab-content">
+        <div class="card">
+            <h3 style="font-size: 15px; margin-bottom: 12px;">Earning Quests (0/50 Completed)</h3>
+            <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;">Complete tasks to earn extra EMOXI tokens and verify your withdrawal account.</p>
+
+            <div class="list-item">
+                <div class="item-info">
+                    <h5>Join Official Telegram Channel</h5>
+                    <p>+1.00 EMO</p>
+                </div>
+                <button class="btn-action">Start</button>
             </div>
-            <button class="task-action-btn" onclick="completeTask(this)">Start</button>
+            <div class="list-item">
+                <div class="item-info">
+                    <h5>Subscribe to YouTube Channel</h5>
+                    <p>+1.50 EMO</p>
+                </div>
+                <button class="btn-action">Start</button>
+            </div>
+            <div class="list-item">
+                <div class="item-info">
+                    <h5>Follow on X / Twitter</h5>
+                    <p>+1.00 EMO</p>
+                </div>
+                <button class="btn-action">Start</button>
+            </div>
         </div>
-        <div class="task-item">
-            <div class="task-info">
-                <h4>Invite a Friend</h4>
-                <p>+1.00 EMO</p>
+    </div>
+
+    <!-- TAB 3: REFERRAL SECTION -->
+    <div id="tab-referral" class="tab-content">
+        <div class="card" style="text-align: center;">
+            <h3 style="font-size: 16px; margin-bottom: 6px;">Invite Friends & Earn</h3>
+            <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;">Earn 10% from your friends' mining output!</p>
+
+            <div style="background: rgba(255,255,255,0.05); padding: 12px; border-radius: 12px; border: 1px dashed var(--card-border); margin-bottom: 16px;">
+                <span style="font-size: 11px; color: var(--text-muted); display: block;">YOUR REFERRAL LINK</span>
+                <strong style="font-size: 12px; color: var(--accent-green);">https://t.me/EMOXI_bot?start=ref123</strong>
             </div>
-            <button class="task-action-btn" onclick="completeTask(this)">Invite</button>
+
+            <button class="btn-primary">Copy Invite Link</button>
+        </div>
+
+        <div class="card">
+            <h4 style="font-size: 13px; color: var(--text-muted); margin-bottom: 10px;">Your Friends (0)</h4>
+            <p style="font-size: 12px; color: var(--text-muted); text-align: center; padding: 10px;">No friends invited yet.</p>
+        </div>
+    </div>
+
+    <!-- TAB 4: ACCOUNT SECTION -->
+    <div id="tab-account" class="tab-content">
+        <div class="card">
+            <h3 style="font-size: 15px; margin-bottom: 16px;">Account Details</h3>
+            
+            <div class="list-item">
+                <span style="font-size: 12px; color: var(--text-muted);">Verification Status</span>
+                <strong style="font-size: 12px; color: var(--accent-red);">Unverified ❌</strong>
+            </div>
+            <div class="list-item">
+                <span style="font-size: 12px; color: var(--text-muted);">Tasks Requirement</span>
+                <strong style="font-size: 12px;">0 / 50 Completed</strong>
+            </div>
+            <div class="list-item">
+                <span style="font-size: 12px; color: var(--text-muted);">Withdrawal Wallet</span>
+                <strong style="font-size: 12px; color: var(--accent-green);">Not Connected</strong>
+            </div>
+        </div>
+
+        <div class="card" style="text-align: center;">
+            <button class="btn-primary" style="background: var(--card-border); color: #fff;">Connect TON / Crypto Wallet</button>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+        <div class="nav-item active" onclick="switchTab('mining', this)">
+            <span class="nav-icon">⛏️</span>
+            <span>Mining</span>
+        </div>
+        <div class="nav-item" onclick="switchTab('tasks', this)">
+            <span class="nav-icon">📋</span>
+            <span>Tasks</span>
+        </div>
+        <div class="nav-item" onclick="switchTab('referral', this)">
+            <span class="nav-icon">👥</span>
+            <span>Referrals</span>
+        </div>
+        <div class="nav-item" onclick="switchTab('account', this)">
+            <span class="nav-icon">👤</span>
+            <span>Account</span>
         </div>
     </div>
 
     <script>
-        // Initialize Telegram WebApp context
-        let tg = window.Telegram.WebApp;
-        tg.expand();
-
-        // Pull Telegram user name if available
-        if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
-            document.getElementById('username').innerText = tg.initDataUnsafe.user.first_name || "EMOXI User";
+        const tg = window.Telegram?.WebApp;
+        if (tg) {
+            tg.expand();
+            const user = tg.initDataUnsafe?.user;
+            if (user) {
+                document.getElementById('user-name').innerText = user.first_name || "Miner";
+                document.getElementById('user-avatar').innerText = (user.first_name || "M")[0].toUpperCase();
+            }
         }
 
-        function startMining() {
-            const statusEl = document.getElementById('mining-status');
-            statusEl.innerText = "Status: Mining Active 🟢 (Ends in 8h)";
-            tg.HapticFeedback.notificationOccurred('success');
+        function switchTab(tabName, element) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            // Remove active class from nav buttons
+            document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+
+            // Show selected tab
+            document.getElementById('tab-' + tabName).classList.add('active');
+            element.classList.add('active');
         }
 
-        function completeTask(btn) {
-            btn.innerText = "Done ✅";
-            btn.style.borderColor = "#8b949e";
-            btn.style.color = "#8b949e";
-            tg.HapticFeedback.impactOccurred('medium');
+        function claimMining() {
+            alert("Mining session activated! Check back in 8 hours to claim your tokens.");
         }
     </script>
-
 </body>
 </html>
+ 
