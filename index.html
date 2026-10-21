@@ -3,18 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>EMOXI Dashboard</title>
+    <title>EMOXI AI</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-color: #0b0e14;
-            --card-bg: #151a23;
-            --card-border: #222938;
-            --accent-green: #00e676;
-            --accent-glow: rgba(0, 230, 118, 0.2);
+            --bg-main: #0a0714;
+            --card-bg: #141026;
+            --card-border: rgba(255, 255, 255, 0.08);
+            --accent-purple: #7c3aed;
+            --accent-purple-light: #8b5cf6;
+            --accent-green: #10b981;
+            --accent-blue: #0284c7;
+            --accent-orange: #f59e0b;
             --text-main: #ffffff;
-            --text-muted: #8a94a6;
+            --text-muted: #94a3b8;
             --accent-red: #ff5252;
         }
 
@@ -27,320 +30,657 @@
         }
 
         body {
-            background-color: var(--bg-color);
+            background-color: var(--bg-main);
             color: var(--text-main);
             padding: 16px;
-            padding-bottom: 90px;
+            padding-bottom: 95px;
             min-height: 100vh;
         }
 
-        /* Top Header */
-        .header {
+        /* SPLASH SCREEN */
+        #splash-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: #080511;
             display: flex;
-            justify-content: space-between;
+            flex-direction: column;
             align-items: center;
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            padding: 12px 16px;
-            border-radius: 16px;
-            margin-bottom: 16px;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
         }
 
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .avatar {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #00e676, #00b0ff);
+        .splash-card {
+            width: 100px;
+            height: 100px;
+            background: #141026;
+            border-radius: 28px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: 800;
-            color: #000;
+            font-size: 46px;
+            position: relative;
+            margin-bottom: 16px;
+            border: 1px solid var(--card-border);
+            box-shadow: 0 0 30px rgba(124, 58, 237, 0.3);
         }
 
-        .user-details h4 { font-size: 14px; font-weight: 700; }
-        .user-details span { font-size: 11px; color: var(--accent-green); font-weight: 600; }
+        .splash-title { font-size: 24px; font-weight: 800; }
+        .splash-title span { color: var(--accent-purple-light); }
 
-        .status-badge {
-            font-size: 11px;
-            background: rgba(255, 82, 82, 0.1);
-            color: var(--accent-red);
-            padding: 6px 10px;
-            border-radius: 20px;
-            font-weight: 700;
-            border: 1px solid rgba(255, 82, 82, 0.2);
-        }
+        /* TAB PAGES */
+        .tab-page { display: none; flex-direction: column; gap: 14px; }
+        .tab-page.active { display: flex; }
 
-        /* Tab Content Containers */
-        .tab-content { display: none; flex-direction: column; gap: 16px; }
-        .tab-content.active { display: flex; }
-
-        /* Card Styles */
         .card {
             background: var(--card-bg);
             border: 1px solid var(--card-border);
             border-radius: 20px;
-            padding: 20px;
+            padding: 18px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
         }
 
-        /* Balance Display */
-        .balance-title { font-size: 12px; color: var(--text-muted); text-transform: uppercase; font-weight: 700; text-align: center; }
-        .balance-amount { font-size: 36px; font-weight: 800; text-align: center; margin: 8px 0; }
-        .balance-amount span { color: var(--accent-green); }
-        .balance-usd { font-size: 13px; color: var(--text-muted); text-align: center; font-weight: 600; }
+        /* BANNER CARD */
+        .banner-card {
+            background: linear-gradient(135deg, #1e1338, #120b24);
+            border: 1px solid rgba(124, 58, 237, 0.25);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
 
-        /* Mining Section */
-        .mining-node-container {
+        .badge-pill {
+            display: inline-block;
+            background: rgba(245, 158, 11, 0.15);
+            color: var(--accent-orange);
+            font-size: 10px;
+            font-weight: 800;
+            padding: 4px 10px;
+            border-radius: 20px;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            margin-bottom: 6px;
+            text-transform: uppercase;
+        }
+
+        .banner-title { font-size: 18px; font-weight: 800; margin-bottom: 4px; }
+        .banner-sub { font-size: 11px; color: var(--text-muted); line-height: 1.4; max-width: 82%; }
+
+        /* SECTION HEADERS */
+        .sec-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 6px 0;
+        }
+
+        .sec-title {
+            font-size: 13px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        .badge-count {
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--accent-green);
+            font-size: 11px;
+            font-weight: 800;
+            padding: 4px 10px;
+            border-radius: 20px;
+        }
+
+        /* DUAL BUTTON TASK CARDS */
+        .task-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            padding: 16px;
             display: flex;
             flex-direction: column;
+            gap: 14px;
+        }
+
+        .task-top {
+            display: flex;
             align-items: center;
-            gap: 20px;
-            padding: 30px 20px;
+            justify-content: space-between;
+        }
+
+        .task-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .task-icon {
+            width: 46px;
+            height: 46px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            flex-shrink: 0;
+            color: #fff;
+        }
+
+        .task-details h4 { font-size: 14px; font-weight: 800; }
+        .task-tag {
+            display: inline-block;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 10px;
+            margin: 3px 0;
+        }
+
+        .task-sub { font-size: 11px; color: var(--text-muted); font-weight: 600; }
+
+        .reward-badge {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--card-border);
+            border-radius: 14px;
+            padding: 6px 12px;
             text-align: center;
         }
 
-        .mining-circle {
-            width: 140px;
-            height: 140px;
-            border-radius: 50%;
-            background: radial-gradient(circle, rgba(0,230,118,0.1) 0%, rgba(21,26,35,1) 70%);
-            border: 2px solid var(--accent-green);
-            box-shadow: 0 0 20px var(--accent-glow);
+        .reward-amount { font-size: 14px; font-weight: 800; color: var(--accent-green); }
+        .reward-unit { font-size: 9px; font-weight: 700; color: var(--text-muted); }
+
+        .task-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .btn-action-left {
+            background: var(--accent-purple);
+            color: #fff;
+            border: none;
+            padding: 12px;
+            border-radius: 14px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
             gap: 6px;
         }
 
-        .mining-icon { font-size: 32px; }
-        .mining-rate { font-size: 12px; font-weight: 700; color: var(--accent-green); }
-
-        .btn-primary {
-            width: 100%;
+        .btn-claim {
             background: var(--accent-green);
-            color: #000;
-            font-size: 15px;
-            font-weight: 800;
-            padding: 14px;
-            border: none;
-            border-radius: 16px;
-            cursor: pointer;
-            transition: transform 0.1s;
-        }
-        .btn-primary:active { transform: scale(0.98); }
-
-        /* Tasks & Referrals Lists */
-        .list-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px 0;
-            border-bottom: 1px solid var(--card-border);
-        }
-        .list-item:last-child { border-bottom: none; }
-
-        .item-info h5 { font-size: 13px; font-weight: 700; }
-        .item-info p { font-size: 11px; color: var(--accent-green); font-weight: 600; margin-top: 2px; }
-
-        .btn-action {
-            background: rgba(255, 255, 255, 0.08);
             color: #fff;
+            border: none;
+            padding: 12px;
+            border-radius: 14px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.25);
+        }
+
+        .btn-claim.claimed {
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--text-muted);
+            box-shadow: none;
+            cursor: default;
+        }
+
+        /* REFERRAL STYLES */
+        .ref-hero-title {
+            font-size: 20px;
+            font-weight: 800;
+            text-align: center;
+            background: linear-gradient(135deg, #10b981, #38bdf8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 10px 0 6px 0;
+        }
+
+        .ref-hero-sub {
+            font-size: 12px;
+            color: var(--text-muted);
+            text-align: center;
+            line-height: 1.5;
+            margin-bottom: 16px;
+        }
+
+        .perk-box {
+            background: rgba(255, 255, 255, 0.03);
             border: 1px solid var(--card-border);
-            padding: 8px 14px;
-            border-radius: 12px;
+            border-radius: 14px;
+            padding: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+
+        .perk-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            background: rgba(124, 58, 237, 0.2);
+            color: var(--accent-purple-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .perk-info h5 { font-size: 13px; font-weight: 700; }
+        .perk-info p { font-size: 11px; color: var(--text-muted); }
+
+        .link-input-box {
+            display: flex;
+            gap: 8px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--card-border);
+            border-radius: 14px;
+            padding: 6px 6px 6px 12px;
+            align-items: center;
+            margin: 14px 0;
+        }
+
+        .link-text {
+            font-size: 11px;
+            color: var(--text-muted);
+            flex-grow: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .btn-copy {
+            background: var(--accent-purple);
+            color: #fff;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 10px;
             font-size: 12px;
             font-weight: 700;
             cursor: pointer;
         }
 
-        /* Bottom Nav Navigation */
+        .btn-share {
+            width: 100%;
+            background: #0284c7;
+            color: #fff;
+            border: none;
+            padding: 14px;
+            border-radius: 16px;
+            font-size: 14px;
+            font-weight: 800;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(2, 132, 199, 0.3);
+        }
+
+        .stats-2col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 14px;
+        }
+
+        .stat-card-title { font-size: 10px; color: var(--text-muted); font-weight: 800; text-transform: uppercase; }
+        .stat-card-val { font-size: 20px; font-weight: 800; margin-top: 4px; }
+
+        /* BOTTOM FLOATING NAV BAR */
         .bottom-nav {
             position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 70px;
-            background: #11151c;
-            border-top: 1px solid var(--card-border);
+            bottom: 12px;
+            left: 16px;
+            right: 16px;
+            height: 64px;
+            background: #ffffff;
+            border-radius: 32px;
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             align-items: center;
             z-index: 1000;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
         }
 
         .nav-item {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 4px;
-            color: var(--text-muted);
-            font-size: 11px;
+            gap: 2px;
+            color: #64748b;
+            font-size: 10px;
             font-weight: 700;
             cursor: pointer;
         }
 
-        .nav-item.active { color: var(--accent-green); }
-        .nav-icon { font-size: 18px; }
+        .nav-item.active {
+            color: #0f172a;
+        }
+
+        .nav-item.active .nav-btn-icon {
+            background: #ff3b5c;
+            color: #fff;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: -12px;
+            box-shadow: 0 6px 15px rgba(255, 59, 92, 0.4);
+        }
+
+        .nav-icon-text { font-size: 18px; }
     </style>
 </head>
 <body>
 
-    <!-- Header -->
-    <div class="header">
-        <div class="user-info">
-            <div class="avatar" id="user-avatar">E</div>
-            <div class="user-details">
-                <h4 id="user-name">User</h4>
-                <span>Level 1 Miner</span>
-            </div>
-        </div>
-        <div class="status-badge">Unverified ❌</div>
+    <!-- SPLASH SCREEN -->
+    <div id="splash-screen">
+        <div class="splash-card">⚡</div>
+        <div class="splash-title">EMOXI <span>NETWORK</span></div>
     </div>
 
-    <!-- TAB 1: MINING SECTION -->
-    <div id="tab-mining" class="tab-content active">
-        <div class="card">
-            <div class="balance-title">Total EMOXI Balance</div>
-            <div class="balance-amount"><span id="balance-val">0.0000</span> EMO</div>
-            <div class="balance-usd">≈ $0.00 USD</div>
-        </div>
+    <!-- TAB 1: MINING PAGE -->
+    <div id="page-mining" class="tab-page">
+        <div class="card" style="text-align:center; padding:28px 18px;">
+            <div style="font-size:11px; color:var(--text-muted); font-weight:800; letter-spacing:1px; margin-bottom:6px;">TOTAL UNIFIED BALANCE</div>
+            <h1 style="font-size:36px; font-weight:800; color:var(--accent-green);" id="home-bal">$0.0000</h1>
+            <p style="font-size:12px; color:var(--text-muted); margin-top:4px;">Minimum Withdrawal Threshold: $1.00 USD</p>
 
-        <div class="card mining-node-container">
-            <div class="mining-circle">
-                <span class="mining-icon">⛏️</span>
-                <span class="mining-rate">+0.50 EMO/h</span>
+            <div style="margin-top:24px; padding:20px; background:rgba(255,255,255,0.03); border-radius:18px; border:1px solid var(--card-border);">
+                <div style="font-size:12px; color:var(--text-muted); font-weight:700;">PASSIVE MINING RIG ($0.0200 / 24h)</div>
+                <div style="font-size:20px; font-weight:800; color:var(--accent-green); margin:6px 0;" id="pending-node">+$0.0000 USD</div>
+                <button style="width:100%; background:var(--accent-green); color:#000; border:none; padding:14px; border-radius:14px; font-weight:800; cursor:pointer;" onclick="claimNodeYield()">⚡ Claim Mining Rewards</button>
             </div>
-            <button class="btn-primary" onclick="claimMining()">Start 8h Mining Session</button>
         </div>
     </div>
 
-    <!-- TAB 2: TASKS SECTION -->
-    <div id="tab-tasks" class="tab-content">
-        <div class="card">
-            <h3 style="font-size: 15px; margin-bottom: 12px;">Earning Quests (0/50 Completed)</h3>
-            <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;">Complete tasks to earn extra EMOXI tokens and verify your withdrawal account.</p>
+    <!-- TAB 2: TASKS PAGE -->
+    <div id="page-tasks" class="tab-page active">
+        <!-- Top Banner -->
+        <div class="card banner-card">
+            <div>
+                <div class="badge-pill">⚡ INSTANT REWARD</div>
+                <div class="banner-title">Complete Tasks & Earn</div>
+                <div class="banner-sub">Earn $0.0010 USD per task completed. Reach 50 completed tasks to unlock instant BEP-20 withdrawals!</div>
+            </div>
+            <div style="font-size:42px;">💰</div>
+        </div>
 
-            <div class="list-item">
-                <div class="item-info">
-                    <h5>Join Official Telegram Channel</h5>
-                    <p>+1.00 EMO</p>
+        <div class="sec-header">
+            <div class="sec-title">OFFICIAL AD TASKS</div>
+            <div class="badge-count" id="task-completed-count">0 / 50 Tasks Completed</div>
+        </div>
+
+        <!-- Task 1: Sponsor Ad -->
+        <div class="task-card">
+            <div class="task-top">
+                <div class="task-left">
+                    <div class="task-icon" style="background:#f59e0b;">▶</div>
+                    <div class="task-details">
+                        <h4>Watch Sponsor Ad</h4>
+                        <span class="task-tag" style="background:rgba(245,158,11,0.2); color:#f59e0b;">★ $0.0010 USD</span>
+                        <div class="task-sub">⚡ Watch & click ad to verify</div>
+                    </div>
                 </div>
-                <button class="btn-action">Start</button>
-            </div>
-            <div class="list-item">
-                <div class="item-info">
-                    <h5>Subscribe to YouTube Channel</h5>
-                    <p>+1.50 EMO</p>
+                <div class="reward-badge">
+                    <div class="reward-amount">+$0.0010</div>
+                    <div class="reward-unit">USD</div>
                 </div>
-                <button class="btn-action">Start</button>
             </div>
-            <div class="list-item">
-                <div class="item-info">
-                    <h5>Follow on X / Twitter</h5>
-                    <p>+1.00 EMO</p>
+            <div class="task-buttons">
+                <button class="btn-action-left" style="background:#f59e0b;">▶ Watch Ad</button>
+                <button class="btn-claim" onclick="claimTaskReward(0.0010, this)">⚡ Claim Reward</button>
+            </div>
+        </div>
+
+        <!-- Task 2: Video Ad -->
+        <div class="task-card">
+            <div class="task-top">
+                <div class="task-left">
+                    <div class="task-icon" style="background:#6366f1;">▶</div>
+                    <div class="task-details">
+                        <h4>Watch Partner Video</h4>
+                        <span class="task-tag" style="background:rgba(99,102,241,0.2); color:#818cf8;">★ $0.0010 USD</span>
+                        <div class="task-sub">⚡ Complete video view</div>
+                    </div>
                 </div>
-                <button class="btn-action">Start</button>
+                <div class="reward-badge">
+                    <div class="reward-amount">+$0.0010</div>
+                    <div class="reward-unit">USD</div>
+                </div>
+            </div>
+            <div class="task-buttons">
+                <button class="btn-action-left" style="background:#6366f1;">▶ Watch Video</button>
+                <button class="btn-claim" onclick="claimTaskReward(0.0010, this)">⚡ Claim Reward</button>
+            </div>
+        </div>
+
+        <!-- Task 3: Sponsor Link -->
+        <div class="task-card">
+            <div class="task-top">
+                <div class="task-left">
+                    <div class="task-icon" style="background:#0284c7;">🔗</div>
+                    <div class="task-details">
+                        <h4>Visit Sponsor Link</h4>
+                        <span class="task-tag" style="background:rgba(2,132,199,0.2); color:#38bdf8;">✔ 10s Visit</span>
+                        <div class="task-sub">⏱ Open page for 10 seconds</div>
+                    </div>
+                </div>
+                <div class="reward-badge">
+                    <div class="reward-amount">+$0.0010</div>
+                    <div class="reward-unit">USD</div>
+                </div>
+            </div>
+            <div class="task-buttons">
+                <button class="btn-action-left" style="background:#0284c7;">🔗 Visit Link</button>
+                <button class="btn-claim" onclick="claimTaskReward(0.0010, this)">⚡ Claim Reward</button>
+            </div>
+        </div>
+
+        <!-- Task 4: Telegram Channel -->
+        <div class="task-card">
+            <div class="task-top">
+                <div class="task-left">
+                    <div class="task-icon" style="background:#0ea5e9;">✈</div>
+                    <div class="task-details">
+                        <h4>Join EMOXI Official</h4>
+                        <span class="task-tag" style="background:rgba(14,165,233,0.2); color:#38bdf8;">✔ Verified</span>
+                        <div class="task-sub">@EMOXI_Official</div>
+                    </div>
+                </div>
+                <div class="reward-badge">
+                    <div class="reward-amount">+$0.0010</div>
+                    <div class="reward-unit">USD</div>
+                </div>
+            </div>
+            <div class="task-buttons">
+                <button class="btn-action-left" style="background:#0ea5e9;">✈ Join Channel</button>
+                <button class="btn-claim" onclick="claimTaskReward(0.0010, this)">⚡ Claim Reward</button>
             </div>
         </div>
     </div>
 
-    <!-- TAB 3: REFERRAL SECTION -->
-    <div id="tab-referral" class="tab-content">
-        <div class="card" style="text-align: center;">
-            <h3 style="font-size: 16px; margin-bottom: 6px;">Invite Friends & Earn</h3>
-            <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;">Earn 10% from your friends' mining output!</p>
-
-            <div style="background: rgba(255,255,255,0.05); padding: 12px; border-radius: 12px; border: 1px dashed var(--card-border); margin-bottom: 16px;">
-                <span style="font-size: 11px; color: var(--text-muted); display: block;">YOUR REFERRAL LINK</span>
-                <strong style="font-size: 12px; color: var(--accent-green);">https://t.me/EMOXI_bot?start=ref123</strong>
+    <!-- TAB 3: REFERRALS PAGE -->
+    <div id="page-referrals" class="tab-page">
+        <div class="card">
+            <div style="text-align:center;">
+                <span class="badge-pill" style="background:rgba(124,58,237,0.2); color:var(--accent-purple-light); border-color:rgba(124,58,237,0.4);">
+                    $0.0100 REFERRAL BONUS PROGRAM
+                </span>
             </div>
 
-            <button class="btn-primary">Copy Invite Link</button>
+            <div class="ref-hero-title">Invite Friends & Earn $0.0100 Per Friend</div>
+            <div class="ref-hero-sub">
+                Earn a <b style="color:var(--accent-green)">$0.0100 USD bonus</b> for every active user who registers with your link! Bonus unlocks as soon as your friend completes 5 tasks.
+            </div>
+
+            <div class="perk-box">
+                <div class="perk-icon">💲</div>
+                <div class="perk-info">
+                    <h5>$0.0100 Instant Bonus</h5>
+                    <p>Credited to your main wallet after friend hits 5 tasks</p>
+                </div>
+            </div>
+
+            <div class="perk-box">
+                <div class="perk-icon">🛡️</div>
+                <div class="perk-info">
+                    <h5>Anti-Farming Protection</h5>
+                    <p>Ensures only genuine active members count toward bonuses</p>
+                </div>
+            </div>
+
+            <div class="link-input-box">
+                <div class="link-text" id="ref-link-val">https://t.me/EMOXI_bot?start=ref123</div>
+                <button class="btn-copy" onclick="copyRefLink()">Copy</button>
+            </div>
+
+            <button class="btn-share" onclick="copyRefLink()">✈ Share Link & Start Earning</button>
+        </div>
+
+        <div class="stats-2col">
+            <div class="stat-card">
+                <div class="stat-card-title">TOTAL REFERRALS</div>
+                <div class="stat-card-val">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card-title">REFERRAL EARNED</div>
+                <div class="stat-card-val" style="color:var(--accent-green);">$0.00 USD</div>
+            </div>
         </div>
 
         <div class="card">
-            <h4 style="font-size: 13px; color: var(--text-muted); margin-bottom: 10px;">Your Friends (0)</h4>
-            <p style="font-size: 12px; color: var(--text-muted); text-align: center; padding: 10px;">No friends invited yet.</p>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <h4 style="font-size:14px; font-weight:800;">Your Referral Squad</h4>
+                <span style="font-size:12px; color:var(--accent-purple-light); font-weight:800;">0 Friends</span>
+            </div>
+            <p style="font-size:12px; color:var(--text-muted); text-align:center; padding:24px 10px;">
+                No friends invited yet. Share your link above to build your squad!
+            </p>
         </div>
     </div>
 
-    <!-- TAB 4: ACCOUNT SECTION -->
-    <div id="tab-account" class="tab-content">
+    <!-- TAB 4: ACCOUNT PROFILE & WITHDRAWAL -->
+    <div id="page-profile" class="tab-page">
         <div class="card">
-            <h3 style="font-size: 15px; margin-bottom: 16px;">Account Details</h3>
-            
-            <div class="list-item">
-                <span style="font-size: 12px; color: var(--text-muted);">Verification Status</span>
-                <strong style="font-size: 12px; color: var(--accent-red);">Unverified ❌</strong>
-            </div>
-            <div class="list-item">
-                <span style="font-size: 12px; color: var(--text-muted);">Tasks Requirement</span>
-                <strong style="font-size: 12px;">0 / 50 Completed</strong>
-            </div>
-            <div class="list-item">
-                <span style="font-size: 12px; color: var(--text-muted);">Withdrawal Wallet</span>
-                <strong style="font-size: 12px; color: var(--accent-green);">Not Connected</strong>
+            <h3 class="sec-title" style="margin-bottom:12px;">Account & Withdrawal Status</h3>
+            <div style="display:flex; flex-direction:column; gap:12px;">
+                <div style="display:flex; justify-content:space-between; font-size:12px;">
+                    <span style="color:var(--text-muted);">Minimum Threshold:</span>
+                    <strong>$1.00 USD</strong>
+                </div>
+                <div style="display:flex; justify-content:space-between; font-size:12px;">
+                    <span style="color:var(--text-muted);">Tasks Requirement:</span>
+                    <strong id="acc-task-progress">0 / 50 Tasks</strong>
+                </div>
+                <div style="display:flex; justify-content:space-between; font-size:12px;">
+                    <span style="color:var(--text-muted);">Payout Wallet:</span>
+                    <strong style="color:var(--accent-green);">BEP-20 (BNB/USDT)</strong>
+                </div>
+                <div style="display:flex; justify-content:space-between; font-size:12px;">
+                    <span style="color:var(--text-muted);">Verification Status:</span>
+                    <strong style="color:var(--accent-red);" id="acc-verification">Unverified ❌</strong>
+                </div>
             </div>
         </div>
 
-        <div class="card" style="text-align: center;">
-            <button class="btn-primary" style="background: var(--card-border); color: #fff;">Connect TON / Crypto Wallet</button>
+        <div class="card" style="text-align:center;">
+            <button style="width:100%; background:var(--accent-purple); color:#fff; border:none; padding:14px; border-radius:14px; font-weight:800; cursor:pointer;" onclick="requestWithdrawal()">Request $1.00 BEP-20 Payout</button>
+            <p style="font-size:11px; color:var(--text-muted); margin-top:8px;">Requires $1.00 balance + 50 completed tasks ($0.01 fee applied).</p>
         </div>
     </div>
 
-    <!-- Bottom Navigation -->
+    <!-- BOTTOM FLOATING NAV BAR -->
     <div class="bottom-nav">
-        <div class="nav-item active" onclick="switchTab('mining', this)">
-            <span class="nav-icon">⛏️</span>
+        <div class="nav-item" onclick="switchTab('mining', this)">
+            <span class="nav-icon-text">⛏️</span>
             <span>Mining</span>
         </div>
-        <div class="nav-item" onclick="switchTab('tasks', this)">
-            <span class="nav-icon">📋</span>
+        <div class="nav-item active" onclick="switchTab('tasks', this)">
+            <div class="nav-btn-icon"><span class="nav-icon-text">☑️</span></div>
             <span>Tasks</span>
         </div>
-        <div class="nav-item" onclick="switchTab('referral', this)">
-            <span class="nav-icon">👥</span>
+        <div class="nav-item" onclick="switchTab('referrals', this)">
+            <span class="nav-icon-text">👥</span>
             <span>Referrals</span>
         </div>
-        <div class="nav-item" onclick="switchTab('account', this)">
-            <span class="nav-icon">👤</span>
+        <div class="nav-item" onclick="switchTab('profile', this)">
+            <span class="nav-icon-text">👤</span>
             <span>Account</span>
         </div>
     </div>
 
     <script>
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                const splash = document.getElementById('splash-screen');
+                splash.style.opacity = '0';
+                splash.style.visibility = 'hidden';
+            }, 1800);
+        });
+
         const tg = window.Telegram?.WebApp;
-        if (tg) {
-            tg.expand();
-            const user = tg.initDataUnsafe?.user;
-            if (user) {
-                document.getElementById('user-name').innerText = user.first_name || "Miner";
-                document.getElementById('user-avatar').innerText = (user.first_name || "M")[0].toUpperCase();
+        if (tg) { tg.expand(); }
+
+        let userBalance = 0.0000;
+        let completedTasksCount = 0;
+
+        function claimTaskReward(amount, btn) {
+            userBalance += amount;
+            completedTasksCount++;
+            
+            document.getElementById('home-bal').innerText = "$" + userBalance.toFixed(4);
+            document.getElementById('task-completed-count').innerText = completedTasksCount + " / 50 Tasks Completed";
+            document.getElementById('acc-task-progress').innerText = completedTasksCount + " / 50 Tasks";
+
+            if (completedTasksCount >= 50) {
+                document.getElementById('acc-verification').innerText = "Verified ✔";
+                document.getElementById('acc-verification').style.color = "var(--accent-green)";
             }
+
+            btn.innerText = "✓ Claimed";
+            btn.classList.add('claimed');
+            btn.onclick = null;
+            alert("Claimed +$" + amount.toFixed(4) + " USD!");
         }
 
-        function switchTab(tabName, element) {
-            // Hide all tabs
-            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
-            // Remove active class from nav buttons
-            document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
-
-            // Show selected tab
-            document.getElementById('tab-' + tabName).classList.add('active');
-            element.classList.add('active');
+        function claimNodeYield() {
+            userBalance += 0.0200;
+            document.getElementById('home-bal').innerText = "$" + userBalance.toFixed(4);
+            alert("Mining cycle claimed! +$0.0200 USD added to unified balance.");
         }
 
-        function claimMining() {
-            alert("Mining session activated! Check back in 8 hours to claim your tokens.");
-        }
-    </script>
-</body>
-</html>
- 
+        function requestWithdrawal() {
+            if (userBalance < 1.00) {
+                alert("Withdrawal locked: Minimum balance threshold is $1.00 USD.");
+                return;
+            }
+            if (completedTasksCount < 50) {
+                alert("Withdrawal locked: You must complete at least 50 tasks to verify your account.");
+                return;
+            }
+            alert("Withdrawal request submitted! Net payout ($0.99 USD) will be processed to your BEP-20 wallet within 24 hours
+
+        
