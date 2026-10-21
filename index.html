@@ -296,4 +296,243 @@
     <div id="page-referrals" class="tab-page">
         <div class="banner-card">
             <div>
-                <div class="badge-pill">⭐ Referral Program
+                <div class="badge-pill">⭐ Referral Program</div>
+                <div class="banner-title">Invite Friends & Boost Mining</div>
+                <div class="banner-sub">Share your link below. Get $0.0001 referral bonus per invited friend!</div>
+            </div>
+            <div style="font-size:38px;">👥</div>
+        </div>
+
+        <div class="card">
+            <div style="font-size:11px; color:var(--text-muted); font-weight:800;">YOUR REFERRAL LINK</div>
+            <div class="link-input-box">
+                <div class="link-text" id="ref-link-val">https://t.me/EMOXI_bot?start=ref123</div>
+                <button class="btn-copy" onclick="copyRefLink()">Copy</button>
+            </div>
+            <button class="btn-share" onclick="copyRefLink()">✈ Share via Telegram</button>
+        </div>
+
+        <div class="stats-4grid">
+            <div class="stat-card">
+                <div class="stat-card-title">TOTAL EARNED</div>
+                <div class="stat-card-val" style="color:var(--accent-green);" id="ref-total-earned">$0.0000</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card-title">TOTAL REFERRALS</div>
+                <div class="stat-card-val" id="ref-count-display">3</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card-title">MILESTONES CLAIMED</div>
+                <div class="stat-card-val">0 / 4</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card-title">RANK</div>
+                <div class="stat-card-val" style="color:var(--accent-purple-light);">Top 100</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+                <h4 style="font-size:14px; font-weight:800;">INVITED FRIENDS</h4>
+                <a href="#" style="font-size:12px; font-weight:800; color:var(--accent-green); text-decoration:none;" onclick="openLeaderboard()">Leaderboard ➔</a>
+            </div>
+
+            <div class="invited-row">
+                <div class="invited-left">
+                    <div class="invited-avatar">E</div>
+                    <div>
+                        <div class="invited-user">@Emmzymanny</div>
+                        <div class="invited-time">3d ago</div>
+                    </div>
+                </div>
+                <span style="font-size:11px; color:var(--accent-green); font-weight:800;">+0.0001 EMO</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 4: ACCOUNT / PROFILE -->
+    <div id="page-profile" class="tab-page">
+        <div class="card" style="background:linear-gradient(135deg, #1d173b, #120d28); text-align:center; padding:24px;">
+            <div style="font-size:11px; color:var(--text-muted); font-weight:800;">AVAILABLE TO WITHDRAW</div>
+            <h2 style="font-size:32px; font-weight:800; color:#fff; margin:6px 0;" id="acc-bal-display">$0.0000 USD</h2>
+            <button class="btn-share" style="margin-top:10px;" onclick="requestWithdrawal()">Withdraw</button>
+        </div>
+
+        <div class="menu-row" onclick="openVerificationModal()">
+            <div class="menu-left">
+                <div class="menu-icon">👤</div>
+                <div>
+                    <div class="menu-title">Account Verification</div>
+                    <div class="menu-sub" id="acc-verify-sub">0 / 50 Ads Completed</div>
+                </div>
+            </div>
+            <div class="status-badge-text" id="acc-verify-badge" style="background:rgba(239, 68, 68, 0.15); color:var(--accent-red);">
+                Unverified ❌
+            </div>
+        </div>
+    </div>
+
+    <!-- LEADERBOARD MODAL -->
+    <div id="leaderboard-modal" class="modal">
+        <div class="modal-content">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+                <h3 style="font-size:16px; font-weight:800;">🏆 Invite Leaderboard</h3>
+                <span style="font-size:18px; cursor:pointer;" onclick="closeModal('leaderboard-modal')">✕</span>
+            </div>
+            <div class="invited-row">
+                <div class="invited-left">
+                    <strong style="color:var(--accent-green);">1.</strong>
+                    <div class="invited-user">@Emmzymanny</div>
+                </div>
+                <strong>142 Invites</strong>
+            </div>
+        </div>
+    </div>
+
+    <!-- VERIFICATION MODAL -->
+    <div id="verification-modal" class="modal">
+        <div class="modal-content">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+                <h3 style="font-size:16px; font-weight:800;">🛡️ Account Verification</h3>
+                <span style="font-size:18px; cursor:pointer;" onclick="closeModal('verification-modal')">✕</span>
+            </div>
+            <div style="text-align:center;">
+                <h4 id="modal-verify-status" style="font-size:16px; font-weight:800; color:var(--accent-red);">Unverified Account</h4>
+                <p style="font-size:12px; color:var(--text-muted); margin-top:8px;">Complete 50 ad tasks to unlock withdrawals.</p>
+                <div style="background:rgba(255,255,255,0.05); padding:12px; border-radius:14px; margin-top:16px;">
+                    <strong style="font-size:18px;" id="modal-verify-progress">0 / 50 Ads Completed</strong>
+                </div>
+                <button class="btn-share" style="margin-top:16px;" onclick="switchTab('tasks'); closeModal('verification-modal');">Go to Tasks</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- BOTTOM FLOATING NAV BAR -->
+    <div class="bottom-nav">
+        <div class="nav-item active" onclick="switchTab('mining', this)">
+            <div class="nav-icon-box"><span class="nav-icon-text">⛏️</span></div>
+            <span>Mining</span>
+        </div>
+        <div class="nav-item" onclick="switchTab('tasks', this)">
+            <div class="nav-icon-box"><span class="nav-icon-text">☑️</span></div>
+            <span>Tasks</span>
+        </div>
+        <div class="nav-item" onclick="switchTab('referrals', this)">
+            <div class="nav-icon-box"><span class="nav-icon-text">👥</span></div>
+            <span>Friends</span>
+        </div>
+        <div class="nav-item" onclick="switchTab('profile', this)">
+            <div class="nav-icon-box"><span class="nav-icon-text">👤</span></div>
+            <span>Account</span>
+        </div>
+    </div>
+
+    <script>
+        const tg = window.Telegram?.WebApp;
+        if (tg) { tg.expand(); }
+
+        let userBalance = 0.0000;
+        let pendingCollect = 0.000000;
+        let completedAdsCount = 0;
+        const ratePerSec = 0.0200 / 86400;
+
+        setInterval(() => {
+            pendingCollect += ratePerSec;
+            document.getElementById('pending-collect').innerText = "$" + pendingCollect.toFixed(6);
+        }, 1000);
+
+        function collectEarnings() {
+            userBalance += pendingCollect;
+            pendingCollect = 0.000000;
+            updateUI();
+            alert("Collected mining yield!");
+        }
+
+        function completeTask(reward, btn) {
+            userBalance += reward;
+            completedAdsCount++;
+            updateUI();
+            btn.innerText = "✓ Done";
+            alert("Task completed!");
+        }
+
+        function updateUI() {
+            document.getElementById('home-bal').innerText = "$" + userBalance.toFixed(4);
+            document.getElementById('acc-bal-display').innerText = "$" + userBalance.toFixed(4) + " USD";
+
+            const verifySub = document.getElementById('acc-verify-sub');
+            const verifyBadge = document.getElementById('acc-verify-badge');
+            const modalProgress = document.getElementById('modal-verify-progress');
+            const modalStatus = document.getElementById('modal-verify-status');
+
+            if (completedAdsCount >= 50) {
+                verifySub.innerText = "Verified Member ✔";
+                verifyBadge.innerText = "Verified ✔";
+                verifyBadge.style.background = "rgba(16, 185, 129, 0.15)";
+                verifyBadge.style.color = "var(--accent-green)";
+                modalStatus.innerText = "Verified Account";
+                modalStatus.style.color = "var(--accent-green)";
+                modalProgress.innerText = "50 / 50 Ads Completed";
+            } else {
+                verifySub.innerText = completedAdsCount + " / 50 Ads Completed";
+                modalProgress.innerText = completedAdsCount + " / 50 Ads Completed";
+            }
+        }
+
+        function copyRefLink() {
+            navigator.clipboard.writeText(document.getElementById('ref-link-val').innerText);
+            alert("Referral link copied!");
+        }
+
+        function openLeaderboard() {
+            document.getElementById('leaderboard-modal').style.display = 'flex';
+        }
+
+        function openVerificationModal() {
+            document.getElementById('verification-modal').style.display = 'flex';
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).style.display = 'none';
+        }
+
+        function requestWithdrawal() {
+            if (userBalance < 1.00) {
+                alert("Minimum withdrawal threshold is $1.00 USD.");
+                return;
+            }
+            if (completedAdsCount < 50) {
+                alert("Account Unverified: Complete 50 ad tasks first.");
+                openVerificationModal();
+                return;
+            }
+            alert("Withdrawal request submitted!");
+        }
+
+        function switchTab(tabId, element) {
+            document.querySelectorAll('.tab-page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => {
+                n.classList.remove('active');
+                const iconBox = n.querySelector('.nav-icon-box');
+                if (iconBox) {
+                    const textIcon = iconBox.querySelector('.nav-icon-text');
+                    n.appendChild(textIcon);
+                    iconBox.remove();
+                }
+            });
+
+            const activeTab = document.getElementById('page-' + tabId);
+            if (activeTab) { activeTab.classList.add('active'); }
+
+            if (element) {
+                element.classList.add('active');
+                const textIcon = element.querySelector('.nav-icon-text');
+                const newIconBox = document.createElement('div');
+                newIconBox.className = 'nav-icon-box';
+                newIconBox.appendChild(textIcon);
+                element.insertBefore(newIconBox, element.firstChild);
+            }
+        }
+    </script>
+</body>
+</html>
