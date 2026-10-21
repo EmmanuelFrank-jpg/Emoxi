@@ -1,247 +1,240 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>EMOXI AI Network</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --bg-main: #0c0a17;
-            --card-bg: #151128;
-            --card-border: rgba(255, 255, 255, 0.08);
-            --accent-purple: #6366f1;
-            --accent-purple-light: #818cf8;
-            --accent-green: #10b981;
-            --text-main: #ffffff;
-            --text-muted: #94a3b8;
-            --accent-red: #ef4444;
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Emoki Mini App</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <script src="https://adsgram.ai/js/adsgram-ad-sdk.js"></script>
+  <style>
+    :root {
+      --bg: #0b0c10;
+      --card-bg: #1f2833;
+      --primary: #66fcf1;
+      --accent: #45a29e;
+      --text: #ffffff;
+      --subtext: #c5c6c7;
+      --danger: #ff4d4d;
+      --success: #2ecc71;
+    }
+    * { margin:0; padding:0; box-sizing:border-box; font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background-color: var(--bg); color: var(--text); padding-bottom: 70px; }
+    
+    /* Top Header */
+    .header { padding: 15px; background: var(--card-bg); display: flex; align-items: center; justify-content: space-between; }
+    .profile-info { display: flex; align-items: center; gap: 10px; }
+    .avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--accent); display:flex; align-items:center; justify-content:center; font-weight:bold; }
+    .vip-badge { background: #f39c12; color: #000; font-size: 10px; padding: 2px 6px; border-radius: 4px; font-weight: bold; }
+    
+    /* Navigation Bar */
+    .nav-bar { position: fixed; bottom: 0; left: 0; right: 0; background: var(--card-bg); display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid #2a3439; z-index: 1000; }
+    .nav-item { color: var(--subtext); text-align: center; font-size: 11px; text-decoration: none; cursor: pointer; }
+    .nav-item.active { color: var(--primary); font-weight: bold; }
+    .nav-icon { font-size: 18px; display: block; margin-bottom: 2px; }
+
+    /* Sections */
+    .section { display: none; padding: 15px; }
+    .section.active { display: block; }
+
+    /* Cards */
+    .card { background: var(--card-bg); border-radius: 12px; padding: 15px; margin-bottom: 15px; border: 1px solid #2c353d; }
+    .btn { width: 100%; padding: 12px; border: none; border-radius: 8px; background: var(--primary); color: #000; font-weight: bold; cursor: pointer; margin-top: 10px; }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .input-box { width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #33414d; background: #0b0c10; color: #fff; margin-top: 8px; }
+
+    /* Mining Ticker */
+    .live-profit { font-size: 28px; font-weight: bold; color: var(--primary); margin: 10px 0; }
+    .fomo-ticker { font-size: 11px; color: var(--success); padding: 5px; background: rgba(46,204,113,0.1); border-radius: 4px; margin-bottom: 12px; }
+  </style>
+</head>
+<body>
+
+  <!-- Top Header -->
+  <div class="header">
+    <div class="profile-info">
+      <div class="avatar" id="user-avatar">E</div>
+      <div>
+        <div style="font-weight: bold;" id="user-name">User</div>
+        <span class="vip-badge" id="vip-tag">Starter</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 1. HOME / MINING TAB -->
+  <div id="tab-home" class="section active">
+    <div class="fomo-ticker" id="fomo-text">⚡ Liam Miller claimed profit +$0.2740 • 9s ago</div>
+
+    <div class="card" style="text-align: center;">
+      <div style="font-size: 12px; color: var(--subtext);">Your Live Profit</div>
+      <div class="live-profit">$<span id="live-mining-val">0.000000</span></div>
+      <button class="btn" onclick="claimMining()">⚡ CLAIM PROFIT</button>
+    </div>
+
+    <h3>⚡ MINER UPGRADES STORE</h3>
+    <div class="card" style="margin-top:10px;">
+      <h4>Emoki Miner v1.0</h4>
+      <p style="font-size: 12px; color: var(--subtext);">Price: $1.00 USDT | Rate: +$0.0500 / Day</p>
+      <button class="btn" onclick="buyMiner(1)">Buy Miner for $1.00 USDT</button>
+    </div>
+  </div>
+
+  <!-- 2. TASKS TAB -->
+  <div id="tab-tasks" class="section">
+    <h3>📋 Daily Ad Tasks (100 Total)</h3>
+    <p style="font-size: 12px; color: var(--subtext); margin-bottom: 15px;">Earn $0.0010 per watched ad.</p>
+
+    <div class="card">
+      <h4>Category 1: Watch & Earn (AdsGram)</h4>
+      <p style="font-size: 12px; color: var(--subtext);">Progress: <span id="cat1-prog">0/25</span></p>
+      <button class="btn" onclick="watchAd(1)">Watch Ad (+ $0.0010)</button>
+    </div>
+    <div class="card">
+      <h4>Category 2: Video Boosts (AdsGram)</h4>
+      <p style="font-size: 12px; color: var(--subtext);">Progress: <span id="cat2-prog">0/25</span></p>
+      <button class="btn" onclick="watchAd(2)">Watch Ad (+ $0.0010)</button>
+    </div>
+    <div class="card">
+      <h4>Category 3: Quick Banners (Monetag)</h4>
+      <p style="font-size: 12px; color: var(--subtext);">Progress: <span id="cat3-prog">0/25</span></p>
+      <button class="btn" onclick="watchAd(3)">Watch Ad (+ $0.0010)</button>
+    </div>
+    <div class="card">
+      <h4>Category 4: Direct Offers (Monetag)</h4>
+      <p style="font-size: 12px; color: var(--subtext);">Progress: <span id="cat4-prog">0/25</span></p>
+      <button class="btn" onclick="watchAd(4)">Watch Ad (+ $0.0010)</button>
+    </div>
+  </div>
+
+  <!-- 3. HISTORY TAB -->
+  <div id="tab-history" class="section">
+    <h3>📜 Transaction History</h3>
+    <div class="card" style="margin-top: 10px;" id="history-list">
+      <p style="font-size:12px; color:var(--subtext);">Loading logs...</p>
+    </div>
+  </div>
+
+  <!-- 4. REFERRALS TAB -->
+  <div id="tab-referrals" class="section">
+    <h3>👥 Invite Friends</h3>
+    <p style="font-size: 12px; color: var(--subtext); margin-bottom: 10px;">Earn +$0.0100 per friend after they complete 5 tasks.</p>
+
+    <div class="card">
+      <p style="font-size: 12px;">Your Unique Invite Link:</p>
+      <input type="text" class="input-box" id="ref-link" readonly value="https://t.me/EmokiBot?start=ref_123">
+      <button class="btn" onclick="copyRefLink()">📋 Copy Link</button>
+    </div>
+  </div>
+
+  <!-- 5. PROFILE / WALLET TAB -->
+  <div id="tab-profile" class="section">
+    <h3>👤 Profile & Wallet</h3>
+
+    <div class="card" style="margin-top:10px;">
+      <div style="font-size: 12px; color: var(--subtext);">Pool Wallet (Withdrawable)</div>
+      <div style="font-size: 24px; font-weight: bold; color: var(--primary);">$<span id="pool-bal">0.0000</span></div>
+    </div>
+
+    <div class="card">
+      <h4>Link BEP20 (USDT) Address</h4>
+      <input type="text" class="input-box" id="bep20-input" placeholder="0x...">
+      <button class="btn" onclick="saveWallet()">Save Address</button>
+    </div>
+
+    <div class="card">
+      <h4>Request Cashout ($1.00 Min)</h4>
+      <p style="font-size: 11px; color: var(--subtext); margin-bottom: 8px;">Requires 30 personal tasks + 3 cashout ads. $0.10 fee applies.</p>
+      <button class="btn" onclick="requestWithdrawal()">Withdraw Funds ($0.90 Net)</button>
+    </div>
+  </div>
+
+  <!-- Navigation Bar -->
+  <div class="nav-bar">
+    <div class="nav-item active" onclick="switchTab('home', this)"><span class="nav-icon">🏠</span>Home</div>
+    <div class="nav-item" onclick="switchTab('tasks', this)"><span class="nav-icon">📋</span>Tasks</div>
+    <div class="nav-item" onclick="switchTab('history', this)"><span class="nav-icon">📜</span>History</div>
+    <div class="nav-item" onclick="switchTab('referrals', this)"><span class="nav-icon">👥</span>Friends</div>
+    <div class="nav-item" onclick="switchTab('profile', this)"><span class="nav-icon">👤</span>Profile</div>
+  </div>
+
+  <script>
+    const tg = window.Telegram.WebApp;
+    tg.expand();
+    
+    const userId = tg.initDataUnsafe?.user?.id || 12345678;
+    const userName = tg.initDataUnsafe?.user?.first_name || "User";
+    
+    document.getElementById("user-name").innerText = userName;
+    document.getElementById("user-avatar").innerText = userName.charAt(0);
+    document.getElementById("ref-link").value = `https://t.me/EmokiBot?start=ref_${userId}`;
+
+    function switchTab(tabName, element) {
+      document.querySelectorAll(".section").forEach(s => s.classList.remove("active"));
+      document.querySelectorAll(".nav-item").forEach(n => n.classList.remove("active"));
+      document.getElementById(`tab-${tabName}`).classList.add("active");
+      element.classList.add("active");
+    }
+
+    async function loadUserData() {
+      try {
+        const res = await fetch(`/api/user/${userId}`);
+        const data = await res.json();
+        
+        document.getElementById("live-mining-val").innerText = data.live_mining.toFixed(6);
+        document.getElementById("pool-bal").innerText = data.user.pool_balance.toFixed(4);
+        document.getElementById("cat1-prog").innerText = `${data.tasks.cat1_completed}/25`;
+        document.getElementById("cat2-prog").innerText = `${data.tasks.cat2_completed}/25`;
+        document.getElementById("cat3-prog").innerText = `${data.tasks.cat3_completed}/25`;
+        document.getElementById("cat4-prog").innerText = `${data.tasks.cat4_completed}/25`;
+        if (data.user.bep20_address) {
+          document.getElementById("bep20-input").value = data.user.bep20_address;
         }
+      } catch (e) {
+        console.error("Error loading user state:", e);
+      }
+    }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            user-select: none;
-        }
+    async function claimMining() {
+      const res = await fetch(`/api/claim-mining/${userId}`, { method: "POST" });
+      const data = await res.json();
+      if (data.status === "success") {
+        alert(`Claimed +$${data.claimed} USDT to your balance!`);
+        loadUserData();
+      } else {
+        alert(data.message);
+      }
+    }
 
-        body {
-            background-color: var(--bg-main);
-            color: var(--text-main);
-            padding: 16px;
-            padding-bottom: 95px;
-            min-height: 100vh;
-        }
+    async function watchAd(catId) {
+      // Integration hook for AdsGram / Monetag
+      alert("Opening Ad... Please watch completely to earn $0.0010.");
+      const res = await fetch(`/api/task-complete/${userId}/${catId}`, { method: "POST" });
+      const data = await res.json();
+      if (data.status === "success") {
+        alert("Task Verified! +$0.0010 credited.");
+        loadUserData();
+      } else {
+        alert(data.message);
+      }
+    }
 
-        /* SPLASH SCREEN */
-        #splash-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: #080612;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            z-index: 99999;
-            transition: opacity 0.5s ease, visibility 0.5s ease;
-        }
+    async function saveWallet() {
+      const addr = document.getElementById("bep20-input").value;
+      if (!addr) return alert("Please enter a valid BEP20 address.");
+      await fetch("/api/save-wallet", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ user_id: userId, bep20_address: addr })
+      });
+      alert("BEP20 Address Saved Successfully!");
+    }
 
-        .splash-card {
-            width: 100px;
-            height: 100px;
-            background: #151128;
-            border-radius: 28px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 46px;
-            position: relative;
-            margin-bottom: 16px;
-            border: 1px solid var(--card-border);
-            box-shadow: 0 0 30px rgba(99, 102, 241, 0.3);
-        }
-
-        .splash-title { font-size: 24px; font-weight: 800; }
-        .splash-title span { color: var(--accent-purple-light); }
-
-        /* TAB PAGES */
-        .tab-page { display: none; flex-direction: column; gap: 14px; }
-        .tab-page.active { display: flex; }
-
-        .card {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 20px;
-            padding: 18px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
-        }
-
-        /* BANNER CARD */
-        .banner-card {
-            background: linear-gradient(135deg, #1e173b, #120d24);
-            border: 1px solid rgba(99, 102, 241, 0.25);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 18px;
-            border-radius: 20px;
-        }
-
-        .badge-pill {
-            display: inline-block;
-            background: rgba(99, 102, 241, 0.18);
-            color: var(--accent-purple-light);
-            font-size: 10px;
-            font-weight: 800;
-            padding: 4px 10px;
-            border-radius: 20px;
-            margin-bottom: 6px;
-            text-transform: uppercase;
-        }
-
-        .banner-title { font-size: 18px; font-weight: 800; margin-bottom: 4px; }
-        .banner-sub { font-size: 11px; color: var(--text-muted); line-height: 1.4; max-width: 82%; }
-
-        /* LINK BOX */
-        .link-input-box {
-            display: flex;
-            gap: 8px;
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid var(--card-border);
-            border-radius: 14px;
-            padding: 6px 6px 6px 12px;
-            align-items: center;
-            margin: 14px 0;
-        }
-
-        .link-text {
-            font-size: 11px;
-            color: var(--text-muted);
-            flex-grow: 1;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-
-        .btn-copy {
-            background: var(--accent-purple);
-            color: #fff;
-            border: none;
-            padding: 10px 16px;
-            border-radius: 10px;
-            font-size: 12px;
-            font-weight: 700;
-            cursor: pointer;
-        }
-
-        .btn-share {
-            width: 100%;
-            background: var(--accent-purple);
-            color: #fff;
-            border: none;
-            padding: 14px;
-            border-radius: 16px;
-            font-size: 14px;
-            font-weight: 800;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
-        }
-
-        /* 4 STAT GRID */
-        .stats-4grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-        }
-
-        .stat-card {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 16px;
-            padding: 14px;
-        }
-
-        .stat-card-title { font-size: 10px; color: var(--text-muted); font-weight: 800; text-transform: uppercase; }
-        .stat-card-val { font-size: 18px; font-weight: 800; margin-top: 4px; }
-
-        /* INVITED FRIENDS LIST */
-        .invited-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 12px 0;
-            border-bottom: 1px solid var(--card-border);
-        }
-        .invited-row:last-child { border-bottom: none; }
-
-        .invited-left { display: flex; align-items: center; gap: 12px; }
-        .invited-avatar {
-            width: 38px;
-            height: 38px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #312e81, #1e1b4b);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 16px;
-            font-weight: 800;
-        }
-
-        .invited-user { font-size: 13px; font-weight: 700; }
-        .invited-time { font-size: 11px; color: var(--text-muted); }
-
-        /* ACCOUNT SETTINGS MENU */
-        .menu-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 16px;
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 18px;
-            cursor: pointer;
-            margin-bottom: 10px;
-        }
-
-        .menu-left { display: flex; align-items: center; gap: 12px; }
-        .menu-icon {
-            width: 36px;
-            height: 36px;
-            border-radius: 12px;
-            background: rgba(99, 102, 241, 0.15);
-            color: var(--accent-purple-light);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-        }
-
-        .menu-title { font-size: 14px; font-weight: 700; }
-        .menu-sub { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
-        .status-badge-text { font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 10px; }
-
-        /* MODAL FOR LEADERBOARD & ACCOUNT VERIFICATION */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(8px);
-            z-index: 10000;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-
-        .modal-content {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 24px
+    async function requestWithdrawal() {
+      const res = await fetch("/api/withdraw", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ user_id: userId })
+      });
+      const data = await res.json();
+      if (res.ok) {
+        alert("Withdrawal Request Submitted!");
+        loadUserData
